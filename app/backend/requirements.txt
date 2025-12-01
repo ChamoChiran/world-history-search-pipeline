@@ -1,0 +1,17 @@
+# FastAPI Backend Dependencies
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+python-dotenv
+
+# CORS
+python-multipart
+
+# Core dependencies from main project
+chromadb
+google-generativeai
+sentence-transformers
+langchain
+langchain-community
+langchain-chroma

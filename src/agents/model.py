@@ -91,12 +91,57 @@ class HistoryAgent:
                 else:
                     raise
     
+    def parse_chapter_metadata(self, metadata_string: str) -> dict:
+        """
+        Parse chapter metadata string into structured data.
+        
+        Args:
+            metadata_string: String like "CHAPTER: 1 - Ancient Egypt | pg-42"
+        
+        Returns:
+            Dict with chapter_number, chapter_name, and page_number
+        """
+        result = {
+            "chapter_number": None,
+            "chapter_name": None,
+            "page_number": None
+        }
+        
+        try:
+            # Split by | to separate chapter info from page
+            parts = metadata_string.split("|")
+            
+            # Extract page number
+            if len(parts) > 1:
+                page_part = parts[1].strip()
+                if page_part.startswith("pg-"):
+                    result["page_number"] = int(page_part.replace("pg-", ""))
+            
+            # Extract chapter info
+            if len(parts) > 0 and "CHAPTER:" in parts[0]:
+                chapter_part = parts[0].replace("CHAPTER:", "").strip()
+                chapter_info = chapter_part.split("-", 1)
+                
+                if len(chapter_info) > 0:
+                    chapter_num = chapter_info[0].strip()
+                    if chapter_num and chapter_num.lower() != "none":
+                        result["chapter_number"] = chapter_num
+                
+                if len(chapter_info) > 1:
+                    chapter_name = chapter_info[1].strip()
+                    if chapter_name and chapter_name.lower() != "none":
+                        result["chapter_name"] = chapter_name
+        except Exception as e:
+            print(f"Error parsing metadata: {e}")
+        
+        return result
+    
     def ask(
         self,
         question: str,
         n_results: int = 10,
         max_retries: int = 3
-    ) -> str:
+    ) -> dict:
         """
         Complete RAG pipeline: retrieve, prompt, and generate.
         
@@ -106,7 +151,7 @@ class HistoryAgent:
             max_retries: Maximum number of retry attempts for generation
         
         Returns:
-            Generated answer
+            Dict with 'answer' (str) and 'sources' (list)
         """
         # Step 1: Retrieve relevant context
         retrieved_data = self.query_vector_db(question, n_results=n_results)
@@ -117,7 +162,27 @@ class HistoryAgent:
         # Step 3: Generate answer
         answer = self.generate_answer(prompt, max_retries=max_retries)
         
-        return answer
+        # Step 4: Format sources from retrieved data
+        sources = []
+        documents = retrieved_data.get("documents", [[]])[0]
+        metadatas = retrieved_data.get("metadatas", [[]])[0]
+        
+        for i, doc in enumerate(documents):
+            if i < len(metadatas):
+                chapter_metadata = metadatas[i].get("chapter_metadata", "")
+                parsed_metadata = self.parse_chapter_metadata(chapter_metadata)
+                
+                sources.append({
+                    "text": doc,
+                    "chapter_number": parsed_metadata["chapter_number"],
+                    "chapter_name": parsed_metadata["chapter_name"],
+                    "page_number": parsed_metadata["page_number"]
+                })
+        
+        return {
+            "answer": answer,
+            "sources": sources
+        }
 
 
 def get_chroma_collection(db_path: str, collection_name: str):
