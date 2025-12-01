@@ -1,0 +1,10 @@
+/* Theme Utility Classes */
+.bg-theme-bg { background-color: var(--bg); }
+.bg-theme-surface { background-color: var(--surface); }
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-accent { color: var(--accent); }
+.border-theme { border-color: var(--border); }
+.hover\:bg-theme-border:hover { background-color: var(--border); }
+.hover\:border-theme-accent:hover { border-color: var(--accent); }
+.hover\:text-theme-accent:hover { color: var(--accent); }

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronos - World History Tutor</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=Fira+Mono&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body { background-color: var(--bg); color: var(--text-primary); }
+        ::selection { background-color: var(--border); color: var(--text-primary); }
+    </style>
+</head>
+<body class="flex h-screen">
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-300 opacity-0 pointer-events-none md:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-100 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl md:translate-x-0 md:static md:shadow-none md:z-0 md:w-80 md:flex-shrink-0 flex flex-col" style="background-color: var(--bg); border-right: 1px solid var(--border);">
+        <div class="p-4 h-full flex flex-col">
+            <!-- Mobile Header -->
+            <div class="flex justify-between items-center mb-8 md:hidden">
+                <span class="font-serif font-bold" style="color: var(--text-primary);">Menu</span>
+                <button id="close-sidebar" style="color: var(--text-secondary);"><i data-lucide="x" width="20"></i></button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Source Information -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider mb-3 px-2" style="color: var(--text-secondary);">Source Material</h3>
+                    <div class="rounded-lg p-4 shadow-sm" style="background-color: var(--surface); border: 1px solid var(--border);">
+                        <div class="flex flex-col items-center text-center space-y-3">
+                            <div class="space-y-1">
+                                <div class="font-serif text-sm font-bold tracking-widest" style="color: var(--text-primary);">WORLD</div>
+                                <div class="font-serif text-sm font-bold tracking-widest" style="color: var(--text-primary);">HISTORY</div>
+                            </div>
+                            <h4 class="font-serif font-bold text-base leading-tight px-2" style="color: var(--text-primary);">
+                                Cultures, States, and Societies to 1500
+                            </h4>
+                            <div class="text-xs space-y-0.5" style="color: var(--text-secondary);">
+                                <div>Eugene Berger, Ph.D. | George L. Israel, Ph.D. | Charlotte Miller, Ph.D.</div>
+                                <div>Brian Parkinson, Ph.D. | Andrew Reeves, Ph.D. | Nadejda Williams, Ph.D.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Session -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider mb-3 px-2" style="color: var(--text-secondary);">Current Session</h3>
+                    <div id="current-session" class="space-y-1">
+                        <div class="px-3 py-4 text-xs text-center italic" style="color: var(--text-secondary);">
+                            No active chat session
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col h-full relative w-full">
+        
+        <!-- Header -->
+        <header class="sticky top-0 z-10 w-full backdrop-blur-md px-4 py-3 flex items-center justify-between transition-all duration-300" style="background-color: var(--bg); opacity: 0.95; border-bottom: 1px solid var(--border);">
+            <div class="flex items-center gap-3">
+                <button id="open-sidebar" class="p-2 rounded-full transition-colors md:hidden" style="color: var(--text-secondary);" onmouseover="this.style.backgroundColor='var(--border)'" onmouseout="this.style.backgroundColor='transparent'">
+                    <i data-lucide="menu" width="20"></i>
+                </button>
+                <div class="flex items-center gap-2" style="color: var(--text-primary);">
+                    <div class="p-1.5 rounded-lg" style="background-color: var(--border);">
+                        <i data-lucide="book-open" style="color: var(--accent);" width="20"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-serif font-bold text-lg leading-tight" style="color: var(--text-primary);">Chronos</h1>
+                        <p class="text-xs font-medium tracking-wide uppercase" style="color: var(--accent);">World History Query</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="new-chat-btn"
+    class="hidden sm:flex items-center gap-1.5 px-4 py-2 text-xs rounded-full font-medium transition-all shadow-sm"
+    style="background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary);"
+    onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';"
+    onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-primary)';"
+>
+    <i data-lucide="plus" width="14"></i> New Chat
+</button>
+
+                <button id="theme-toggle" class="p-2 rounded-full transition-colors" style="color: var(--text-secondary);" onmouseover="this.style.backgroundColor='var(--border)'" onmouseout="this.style.backgroundColor='transparent'">
+                    <i data-lucide="moon" width="20"></i>
+                </button>
+                <button class="p-2 rounded-full transition-colors" style="color: var(--text-secondary);" onmouseover="this.style.backgroundColor='var(--border)'" onmouseout="this.style.backgroundColor='transparent'">
+                    <i data-lucide="settings" width="20"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Area -->
+        <main id="chat-container" class="flex-1 overflow-y-auto px-4 py-6 scroll-smooth">
+            <div class="max-w-[780px] mx-auto min-h-full flex flex-col">
+                
+                <!-- Welcome State (Visible initially) -->
+                <div id="welcome-screen" class="flex-1 flex flex-col items-center justify-center text-center p-8 animate-fade-in">
+                    <div class="p-4 rounded-full mb-6" style="background-color: var(--border);">
+                        <i data-lucide="scroll" style="color: var(--accent);" width="48" height="48"></i>
+                    </div>
+                    <h2 class="font-serif text-3xl font-bold mb-3" style="color: var(--text-primary);">Welcome to Chronos</h2>
+                    <p class="max-w-md mb-8" style="color: var(--text-secondary);">
+                        Your intelligent guide through the corridors of history. Ask a question or choose a topic to begin your journey.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <button class="suggestion-btn px-4 py-2 rounded-full text-sm transition-all shadow-sm" style="background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary);" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-primary)';">
+                            Tell me about Ancient Egyptian pyramids
+                        </button>
+                        <button class="suggestion-btn px-4 py-2 rounded-full text-sm transition-all shadow-sm" style="background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary);" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-primary)';">
+                            How did the Nile shape Egyptian civilization?
+                        </button>
+                        <button class="suggestion-btn px-4 py-2 rounded-full text-sm transition-all shadow-sm" style="background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary);" onmouseover="this.style.borderColor='var(--accent)'; this.style.color='var(--accent)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-primary)';">
+                            What was daily life like in Ancient Egypt?
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div id="messages-list" class="flex-1 hidden">
+                    <!-- Messages will be injected here -->
+                </div>
+
+                <!-- Thinking Indicator (Hidden by default) -->
+                <div id="thinking-indicator" class="flex w-full justify-start mb-6 hidden animate-fade-in">
+                    <div class="rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm flex items-center gap-3" style="background-color: var(--surface); border: 1px solid var(--border);">
+                        <div class="flex gap-1">
+                            <div class="w-2 h-2 rounded-full typing-dot" style="animation-delay: -0.3s; background-color: var(--accent);"></div>
+                            <div class="w-2 h-2 rounded-full typing-dot" style="animation-delay: -0.15s; background-color: var(--accent);"></div>
+                            <div class="w-2 h-2 rounded-full typing-dot" style="background-color: var(--accent);"></div>
+                        </div>
+                        <span id="thinking-text" class="text-sm font-medium font-sans animate-pulse" style="color: var(--text-secondary);">Consulting archives...</span>
+                    </div>
+                </div>
+                
+                <!-- Spacer for scroll -->
+                <div id="scroll-anchor" class="h-4"></div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <div class="p-4" style="background-color: var(--bg); border-top: 1px solid var(--border);">
+            <div class="max-w-[780px] mx-auto">
+                <div class="relative flex items-end gap-2 rounded-2xl shadow-sm p-2 transition-all" style="background-color: var(--surface); border: 1px solid var(--border);">
+                    <textarea 
+                        id="chat-input"
+                        placeholder="Ask about world history..." 
+                        class="w-full bg-transparent border-none resize-none focus:ring-0 focus:outline-none p-2 max-h-[120px] min-h-[44px]"
+                        style="color: var(--text-primary);"
+                        rows="1"
+                    ></textarea>
+                    <style>
+                        #chat-input::placeholder { color: var(--text-secondary); opacity: 0.7; }
+                    </style>
+                    <button 
+                        id="send-btn"
+                        disabled
+                        class="p-2 rounded-xl mb-0.5 transition-all duration-200 cursor-not-allowed"
+                        style="background-color: var(--border); color: var(--text-secondary); opacity: 0.5;"
+                        aria-label="Send Message"
+                    >
+                        <i data-lucide="send" width="18"></i>
+                    </button>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="text-[10px] font-medium tracking-wide uppercase" style="color: var(--text-secondary); opacity: 0.7;">AI may display historical inaccuracies. Verify with primary sources.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
