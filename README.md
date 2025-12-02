@@ -1,122 +1,95 @@
 # World History Search Pipeline
 
-A semantic search system that processes world history textbooks into a queryable vector database, enabling intelligent information retrieval for educational applications.
+A semantic search system for world history textbooks, transforming raw educational content into a queryable vector database for intelligent retrieval and AI-powered tutoring.
 
-## Current Phase: Data Ingestion & Vector Search
+## Project Architecture
 
-This project is currently in the **data pipeline and retrieval phase**, focusing on building a robust semantic search foundation for educational content.
+![System Architecture](diagrams/system-architecture.png)
+
+## Data Pipeline Overview
 
 ![Data Ingestion Pipeline](diagrams/world-history-ingestion.png)
 
-## Project Overview
+## Features
 
-The pipeline transforms unstructured PDF textbooks into a semantically searchable knowledge base using:
-- **Semantic chunking** based on content similarity
-- **Dense vector embeddings** for meaning-aware search
-- **Persistent vector storage** for efficient retrieval
-
-## Pipeline Workflow
-
-### 1. **PDF Extraction**
-- **Script**: `scripts/01_extract_pdf.py`
-- **Module**: `src/ingestion/extract_text.py`
-- Extracts text and metadata from PDF pages
-- Preserves chapter structure and page information
-
-### 2. **Text Cleaning**
-- **Script**: `scripts/02_clean_text.py`
-- **Module**: `src/ingestion/clean_text.py`
-- Removes headers, footers, and page numbers
-- Normalizes whitespace and formatting
-- Maintains chapter metadata linkage
-
-### 3. **Semantic Chunking**
-- **Script**: `scripts/03_create_chunks.py`
-- **Module**: `src/ingestion/chunk_text.py`
-- Uses NLTK for sentence tokenization
-- Employs `all-MiniLM-L6-v2` embeddings
-- Groups semantically similar sentences (threshold: 0.55 cosine similarity)
-- Max chunk size: 10 sentences
-
-### 4. **Vector Database Creation**
-- **Script**: `scripts/04_build_vector_db.py`
-- **Module**: `src/embeddings/store.py`
-- Generates 384-dimensional embeddings
-- Stores in ChromaDB with HNSW indexing
-- Uses cosine distance for similarity
-
-### 5. **Semantic Search**
-- **Script**: `scripts/05_search_vector_db.py`
-- **Module**: `src/retrieval/search.py`
-- Query-based vector similarity search
-- Returns top-k relevant passages with metadata
-- Context-aware results with chapter information
+- **PDF Extraction**: Converts textbooks to structured text with chapter/page metadata.
+- **Text Cleaning**: Removes noise, normalizes formatting, and preserves structure.
+- **Semantic Chunking**: Groups sentences by meaning using transformer embeddings.
+- **Vector Database**: Stores chunks in ChromaDB for fast similarity search.
+- **Semantic Search**: Retrieves relevant passages with context-aware ranking.
 
 ## Technology Stack
 
-- **Python 3.x**
-- **Embeddings**: `sentence-transformers` (all-MiniLM-L6-v2)
-- **Vector Store**: ChromaDB
-- **NLP**: NLTK
-- **PDF Processing**: PDFPlumber
-- **Framework**: LangChain
-- **Notebooks**: Jupyter Lab
+- Python 3.10
+- sentence-transformers (`all-MiniLM-L6-v2`)
+- ChromaDB
+- NLTK
+- pymupdf
+- LangChain
+- Jupyter Lab
+- Gemini API
 
 ## Installation
 
+1. Clone the repository
 ```bash
-# Clone the repository
 git clone https://github.com/ChamoChiran/world-history-search-pipeline.git
+```
+2. Locate the directory
+```bash
 cd world-history-search-pipeline
-
-# Install dependencies
+```
+3. Setup python environment
+```bash
 pip install -r requirements.txt
-
-# Download NLTK data
+```
+4. Install and download required nltk packages.
+```bash
 python -c "import nltk; nltk.download('punkt')"
 ```
 
 ## Usage
 
-### Running the Full Pipeline
+Run the pipeline step-by-step:
 
 ```bash
-# 1. Extract text from PDF
-python scripts/01_extract_pdf.py
-
-# 2. Clean extracted text
-python scripts/02_clean_text.py
-
-# 3. Create semantic chunks
-python scripts/03_create_chunks.py
-
-# 4. Build vector database
-python scripts/04_build_vector_db.py
-
-# 5. Search the database
-python scripts/05_search_vector_db.py
+python scripts/01_extract_pdf.py      
+# Extract text from PDF
+```
+```bash
+python scripts/02_clean_text.py       
+# Clean extracted text
+```
+```bash
+python scripts/03_create_chunks.py    
+# Create semantic chunks
+```
+```bash
+python scripts/04_build_vector_db.py  
+# Build vector database
+```
+```bash
+python scripts/05_search_vector_db.py 
+# Search the database
 ```
 
-### Interactive Notebooks
 
-Explore the pipeline interactively:
-- `notebooks/pdf-explore.ipynb` - PDF exploration
-- `notebooks/pdf-extract-test.ipynb` - Extraction testing
-- `notebooks/vector-search.ipynb` - Search experimentation
+Explore interactively in notebooks:
+- `notebooks/pdf-explore.ipynb`
+- `notebooks/pdf-extract-test.ipynb`
+- `notebooks/vector-search.ipynb`
 
 ## Project Structure
 
 ```
-world-history-search-pipeline/
-├── src/
-│   ├── ingestion/          # Text extraction and processing
-│   ├── embeddings/         # Vector store management
-│   ├── retrieval/          # Search functionality
-│   └── utils/              # Configuration and logging
-├── scripts/                # Sequential pipeline scripts
-├── notebooks/              # Jupyter notebooks for exploration
-├── diagrams/               # Architecture diagrams
-└── requirements.txt        # Python dependencies
+app/
+  backend/      # API and core logic
+  frontend/     # Web UI
+data/           # Raw, cleaned, and vectorized data
+diagrams/       # Architecture images
+notebooks/      # Jupyter exploration
+scripts/        # Pipeline scripts
+src/            # Main modules (agents, embeddings, ingestion, retrieval, utils)
 ```
 
 ## Example Query
@@ -136,20 +109,18 @@ for result in results:
 
 ## Use Cases
 
-- **Educational AI Tutors**: Retrieve relevant historical context for student questions
-- **Study Assistants**: Find specific information across large textbooks
-- **Research Tools**: Semantic exploration of historical topics
-- **Quiz Generation**: Extract content for assessment creation
+- AI-powered history context retrieval
+- Semantic research tools
 
-## Future Development
+## Roadmap
 
-- [ ] Integration with LLM for conversational AI tutor
-- [ ] Multi-document support
-- [ ] Web interface with Gradio/FastAPI
-- [ ] Advanced metadata filtering
-- [ ] Citation and source tracking
-- [ ] Multi-modal support (images, charts)
+- LLM integration for conversational tutoring
+- Multi-document support
+- Web interface (HTML, CSS/FastAPI)
+- Advanced metadata filtering
+- Citation/source tracking
+- Multi-modal (images, charts) support
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT License. See LICENSE for details.

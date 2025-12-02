@@ -1,6 +1,6 @@
 # AI Tutor Frontend
 
-This is the frontend interface for the AI Tutor Agent application.
+This is the frontend interface for the application.
 
 ## Structure
 
